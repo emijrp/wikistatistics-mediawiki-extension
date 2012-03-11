@@ -36,6 +36,7 @@ class SpecialWikiStats extends SpecialPage {
         $totalfiles = $this->getTotalFiles($dbr);
         $totalvisits = $this->getTotalVisits($dbr);
         
+        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-summary-header') .'</h2>');
         $wgOut->addWikiMsg( 'wikistats-basic-stats', $wgLang->formatNum($totalusers), $wgLang->formatNum(0), $wgLang->formatNum(0), $wgLang->formatNum($totalpages), $wgLang->formatNum($totalrevisions), $wgLang->formatNum($totalbytes), $wgLang->formatNum($totalfiles), $wgLang->formatNum($totalvisits) );
         
         $sql = "SELECT CONCAT(YEAR(rev_timestamp),'-',LPAD(MONTH(rev_timestamp), 2, 0),'-',LPAD(DAY(rev_timestamp), 2, 0),'T00:00:00Z') AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
@@ -46,9 +47,10 @@ class SpecialWikiStats extends SpecialPage {
         }
         $dbr->freeResult( $res );
         
-        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-summary-header') .'</h2>
-
-<div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
+        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-activity-header') .'</h2>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-all-header') .'</h3>');
+        
+        $wgOut->addHTML( '<div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
 
 <script type="text/javascript">
 $(function () {
@@ -61,6 +63,12 @@ $(function () {
 });
 
 </script>' );
+        
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-hourly-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-daily-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-weekly-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-monthly-header') .'</h3>');
+
         $sql = "SELECT rev_user, rev_user_text, count(rev_id) as rev_count FROM revision WHERE 1 GROUP BY rev_user ORDER BY rev_count DESC LIMIT " . $limit;
         $res = $dbr->query( $sql );
         $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-users-ranking-header') .'</h2>' );
