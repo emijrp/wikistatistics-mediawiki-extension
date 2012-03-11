@@ -9,24 +9,24 @@
  * message explaining how to install this extension.
  */
 if ( !defined( 'MEDIAWIKI' ) ) { 
-	if ( !defined( 'MEDIAWIKI' ) ) {
-    	echo <<<EOT
+    if ( !defined( 'MEDIAWIKI' ) ) {
+        echo <<<EOT
 To install the Example extension, put the following line in your 
 LocalSettings.php file: 
 require_once( "\$IP/extensions/Example/Example.php" );
 EOT;
-    	exit( 1 );
-	}
+        exit( 1 );
+    }
 }
 
 // Extension credits that will show up on Special:Version
 $wgExtensionCredits[ 'specialpage' ][] = array(
-	'path' => __FILE__,
-	'name' => 'WikiStats',
-	'author' => 'Your Name Here', 
-	'url' => 'https://www.mediawiki.org/wiki/Extension:WikiStats', 
-	'description' => 'This extension is an example extension',
-	'version' => '0.0.1',
+    'path' => __FILE__,
+    'name' => 'WikiStats',
+    'author' => array( '[https://sites.google.com/site/emijrp/ emijrp]', 'mangelrp' ), 
+    'url' => 'https://www.mediawiki.org/wiki/Extension:WikiStats', 
+    'descriptionmsg' => 'wikistats-desc',
+    'version' => '0.0.1',
 );
 
 // Find the full directory path of this extension
