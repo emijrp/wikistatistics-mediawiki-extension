@@ -24,6 +24,9 @@ class SpecialWikiStats extends SpecialPage {
         $wgOut->setPageTitle( wfMsg( 'wikistats-pagetitle' ) );
         $wgOut->addWikiMsg( 'wikistats-welcome' );
         
+        $graphwidth = '800px';
+        $graphheight = '300px';
+        
         $dbr = wfGetDB( DB_SLAVE );
         
         $totalusers = $this->getTotalUsers($dbr);
@@ -43,7 +46,7 @@ class SpecialWikiStats extends SpecialPage {
         }
         $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-summary-header') .'</h2>
 
-<div id="placeholder" style="width:600px;height:300px;"></div>
+<div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
 
 <script type="text/javascript">
 $(function () {
