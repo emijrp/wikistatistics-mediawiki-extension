@@ -67,7 +67,7 @@ $(function () {
         $wgOut->addHTML( '<table class="wikitable sortable">' );
         $wgOut->addHTML( '<tr><th>'.wfMsg('wikistats-username-th').'</th><th>'.wfMsg('wikistats-edits-th').'</th></tr>' );
         foreach ( $res as $row ) {
-            $wgOut->addHTML( '<tr><td>'.Linker::userLink( $row->rev_user, $row->rev_user_text).'</td><td>'.$row->rev_count.'</td></tr>' );
+            $wgOut->addHTML( '<tr><td>'.Linker::userLink( $row->rev_user, $row->rev_user_text).'</td><td>'.$row->rev_count.'</td><td>'.$row->rev_count/($totalrevisions/100).'</td></tr>' );
         }
         $dbr->freeResult( $res );
         $wgOut->addHTML( '</table>' );
