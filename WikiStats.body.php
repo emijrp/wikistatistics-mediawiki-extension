@@ -58,7 +58,7 @@ $(function () {
     
     var placeholder = $("#placeholder");
     var data = [ d1, ];
-    var options = { xaxis: { mode: "time" }, lines: { show: true }, points: { show: true }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    var options = { xaxis: { mode: "time", monthNames: ["'.wfMsg('wikistats-month-jan').'", "'.wfMsg('wikistats-month-feb').'", "'.wfMsg('wikistats-month-mar').'", "'.wfMsg('wikistats-month-apr').'", "'.wfMsg('wikistats-month-may').'", "'.wfMsg('wikistats-month-jun').'", "'.wfMsg('wikistats-month-jul').'", "'.wfMsg('wikistats-month-aug').'", "'.wfMsg('wikistats-month-sep').'", "'.wfMsg('wikistats-month-oct').'", "'.wfMsg('wikistats-month-nov').'", "'.wfMsg('wikistats-month-dec').'" ], }, lines: { show: true }, points: { show: true }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
     $.plot(placeholder, data, options);
 });
 </script>' );
