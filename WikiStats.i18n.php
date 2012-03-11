@@ -22,6 +22,7 @@ $messages[ 'es' ] = array(
     'wikistats-desc' => "Algunas estadísticas y gráficas básicas para tu wiki.",
     'wikistats-welcome' => "Bienvenido a '''WikiStats'''.",
     'wikistats-basic-stats' => "Este wiki tiene $1 usuarios ($2 registrados y $3 anónimos), $4 páginas, $5 revisiones, $6 bytes, $7 archivos, $8 visitas.",
+    'wikistats-global-summary-header' => "Resumen global",
     'wikistats-users-ranking-header' => "Ranking de usuarios",
     'wikistats-username-th' => "Nombre de usuario",
     'wikistats-edits-th' => "Ediciones",
