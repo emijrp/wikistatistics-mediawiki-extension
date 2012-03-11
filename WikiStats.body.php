@@ -2,6 +2,7 @@
 
 #http://www.mediawiki.org/wiki/Manual:Special_pages
 #http://www.mediawiki.org/wiki/Manual:OutputPage.php
+#http://people.iola.dk/olau/flot/API.txt
 
 /**
  * Ideas: user-by-user analysis, page-by-page analysis, 
@@ -51,7 +52,6 @@ class SpecialWikiStats extends SpecialPage {
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-all-header') .'</h3>');
         
         $wgOut->addHTML( '<div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
-
 <script type="text/javascript">
 $(function () {
     var d1 = ['.$d1.'];
@@ -61,10 +61,31 @@ $(function () {
     var options = { xaxis: { mode: "time" }, lines: { show: true }, points: { show: true }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
     $.plot(placeholder, data, options);
 });
-
 </script>' );
         
+        
+        $sql = "SELECT LPAD(HOUR(rev_timestamp), 2, 0) AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
+        $res = $dbr->query( $sql );
+        $d2 = '';
+        foreach ( $res as $row ) {
+            $d2 .= '["'.$row->timestamp.'", '.$row->rev_count.'], ';
+        }
+        $dbr->freeResult( $res );
+        
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-hourly-header') .'</h3>');
+        $wgOut->addHTML( '<div id="placeholder2" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
+<script type="text/javascript">
+$(function () {
+    var d2 = ['.$d2.'];
+    
+    var placeholder2 = $("#placeholder2");
+    var data2 = [ d2, ];
+    var options2 = { xaxis: { mode: null, tickSize: 1, tickDecimals: 0, min: 1, max: 23, }, bars: { show: true, barWidth: 0.6 }, points: { show: false }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    $.plot(placeholder2, data2, options2);
+});
+</script>' );
+        
+        
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-daily-header') .'</h3>');
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-weekly-header') .'</h3>');
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-monthly-header') .'</h3>');
@@ -77,6 +98,7 @@ $(function () {
         foreach ( $res as $row ) {
             $wgOut->addHTML( '<tr><td>'.Linker::userLink( $row->rev_user, $row->rev_user_text).'</td><td>'.$row->rev_count.'</td><td>'.round($row->rev_count/($totalrevisions/100), 2).'%</td></tr>' );
         }
+        $wgOut->addHTML( '<tr><td><b>Total</b></td><td>'.$totalrevisions.'</td><td>100%</td></tr>' );
         $dbr->freeResult( $res );
         $wgOut->addHTML( '</table>' );
 
