@@ -19,14 +19,14 @@ class SpecialWikiStats extends SpecialPage {
      * Make your magic happen!
      */    
     function execute( $par ) {
-        global $wgOut;
+        global $wgLang, $wgOut;
         $wgOut->addModuleScripts( 'ext.WikiStats' );
         $wgOut->setPageTitle( wfMsg( 'wikistats-pagetitle' ) );
         $wgOut->addWikiMsg( 'wikistats-welcome' );
         
         $graphwidth = '800px';
         $graphheight = '300px';
-        
+        $limit = 25;
         $dbr = wfGetDB( DB_SLAVE );
         
         $totalusers = $this->getTotalUsers($dbr);
@@ -36,7 +36,7 @@ class SpecialWikiStats extends SpecialPage {
         $totalfiles = $this->getTotalFiles($dbr);
         $totalvisits = $this->getTotalVisits($dbr);
         
-        $wgOut->addWikiMsg( 'wikistats-basic-stats', $totalusers, 0, 0, $totalpages, $totalrevisions, $totalbytes, $totalfiles, $totalvisits );
+        $wgOut->addWikiMsg( 'wikistats-basic-stats', $wgLang->formatNum($totalusers), $wgLang->formatNum(0), $wgLang->formatNum(0), $wgLang->formatNum($totalpages), $wgLang->formatNum($totalrevisions), $wgLang->formatNum($totalbytes), $wgLang->formatNum($totalfiles), $wgLang->formatNum($totalvisits) );
         
         $sql = "SELECT CONCAT(YEAR(rev_timestamp),'-',LPAD(MONTH(rev_timestamp), 2, 0),'-',LPAD(DAY(rev_timestamp), 2, 0),'T00:00:00Z') AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
         $res = $dbr->query( $sql );
@@ -44,6 +44,8 @@ class SpecialWikiStats extends SpecialPage {
         foreach ( $res as $row ) {
             $d1 .= '["'.$this->mwtime2unixtime($row->timestamp).'", '.$row->rev_count.'], ';
         }
+        $dbr->freeResult( $res );
+        
         $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-summary-header') .'</h2>
 
 <div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
@@ -59,14 +61,15 @@ $(function () {
 });
 
 </script>' );
-        $sql = "SELECT rev_user, rev_user_text, count(rev_id) as rev_count FROM revision WHERE 1 GROUP BY rev_user ORDER BY rev_count DESC LIMIT 25";
+        $sql = "SELECT rev_user, rev_user_text, count(rev_id) as rev_count FROM revision WHERE 1 GROUP BY rev_user ORDER BY rev_count DESC LIMIT " . $limit;
         $res = $dbr->query( $sql );
         $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-users-ranking-header') .'</h2>' );
         $wgOut->addHTML( '<table class="wikitable sortable">' );
         $wgOut->addHTML( '<tr><th>'.wfMsg('wikistats-username-th').'</th><th>'.wfMsg('wikistats-edits-th').'</th></tr>' );
         foreach ( $res as $row ) {
-            $wgOut->addHTML( '<tr><td>'.$row->rev_user_text.'</td><td>'.$row->rev_count.'</td></tr>' );
+            $wgOut->addHTML( '<tr><td>'.Linker::userLink( $row->rev_user, $row->rev_user_text).'</td><td>'.$row->rev_count.'</td></tr>' );
         }
+        $dbr->freeResult( $res );
         $wgOut->addHTML( '</table>' );
 
     }
