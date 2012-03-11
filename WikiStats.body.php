@@ -80,7 +80,7 @@ $(function () {
     
     var placeholder2 = $("#placeholder2");
     var data2 = [ d2, ];
-    var options2 = { xaxis: { mode: null, tickSize: 1, tickDecimals: 0, min: 1, max: 23, }, bars: { show: true, barWidth: 0.6 }, points: { show: false }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    var options2 = { xaxis: { mode: null, tickSize: 1, tickDecimals: 0, min: 1, max: 23}, bars: { show: true, barWidth: 0.6 }, points: { show: false }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
     $.plot(placeholder2, data2, options2);
 });
 </script>' );
@@ -93,7 +93,7 @@ $(function () {
         $sql = "SELECT rev_user, rev_user_text, count(rev_id) as rev_count FROM revision WHERE 1 GROUP BY rev_user ORDER BY rev_count DESC LIMIT " . $limit;
         $res = $dbr->query( $sql );
         $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-users-ranking-header') .'</h2>' );
-        $wgOut->addHTML( '<table class="wikitable sortable">' );
+        $wgOut->addHTML( '<table class="wikitable sortable" style="text-align: center;">' );
         $wgOut->addHTML( '<tr><th>'.wfMsg('wikistats-username-th').'</th><th>'.wfMsg('wikistats-edits-th').'</th><th>%</th></tr>' );
         foreach ( $res as $row ) {
             $wgOut->addHTML( '<tr><td>'.Linker::userLink( $row->rev_user, $row->rev_user_text).'</td><td>'.$row->rev_count.'</td><td>'.round($row->rev_count/($totalrevisions/100), 2).'%</td></tr>' );
