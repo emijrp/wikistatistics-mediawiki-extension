@@ -1,7 +1,7 @@
 <?php
 /**
- * This is an example extension. It doesn't actually do anything useful, but
- * can be copied to provide the basis for your own extension.
+ * WikiStatistics: A MediaWiki extension for basic statistics
+ * https://github.com/emijrp/wikistatistics-mediawiki-extension
  */
 
 /** 
@@ -13,7 +13,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
         echo <<<EOT
 To install the Example extension, put the following line in your 
 LocalSettings.php file: 
-require_once( "\$IP/extensions/Example/Example.php" );
+require_once( "\$IP/extensions/WikiStatistics/WikiStatistics.php"" );
 EOT;
         exit( 1 );
     }
@@ -22,10 +22,10 @@ EOT;
 // Extension credits that will show up on Special:Version
 $wgExtensionCredits[ 'specialpage' ][] = array(
     'path' => __FILE__,
-    'name' => 'WikiStats',
-    'author' => array( '[https://sites.google.com/site/emijrp/ emijrp]', 'mangelrp' ), 
-    'url' => 'https://www.mediawiki.org/wiki/Extension:WikiStats', 
-    'descriptionmsg' => 'wikistats-desc',
+    'name' => 'WikiStatistics',
+    'author' => array( '[https://wikitech.wikimedia.org/wiki/User:Emijrp emijrp]', 'mangelrp' ), 
+    'url' => 'https://www.mediawiki.org/wiki/Extension:WikiStatistics', 
+    'descriptionmsg' => 'wikistatistics-desc',
     'version' => '0.0.1',
 );
 
@@ -33,21 +33,21 @@ $wgExtensionCredits[ 'specialpage' ][] = array(
 $current_dir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR;
 
 // Autoload this extension's classes
-$wgAutoloadClasses[ 'SpecialWikiStats' ] = $current_dir . 'WikiStats.body.php';
+$wgAutoloadClasses[ 'SpecialWikiStatistics' ] = $current_dir . 'WikiStatistics.body.php';
 
 // Add the i18n message file
-$wgExtensionMessagesFiles[ 'WikiStats' ] = $current_dir . 'WikiStats.i18n.php';
+$wgExtensionMessagesFiles[ 'WikiStatistics' ] = $current_dir . 'WikiStatistics.i18n.php';
 
 // Tell MediaWiki about the special page
-$wgSpecialPages[ 'WikiStats' ] = 'SpecialWikiStats';
+$wgSpecialPages[ 'WikiStatistics' ] = 'SpecialWikiStatistics';
 
 //http://www.mediawiki.org/wiki/Manual:$wgResourceModules#Examples
 #to add this    <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="../excanvas.min.js"></script><![endif]-->
-$wgResourceModules['ext.WikiStats'] = array(
+$wgResourceModules['ext.WikiStatistics'] = array(
         'scripts' => array('modules/jquery.js', 'modules/jquery.flot.js'),
         'styles' => 'modules/layout.css',
         'dependencies' => array( ), 
         'localBasePath' => dirname( __FILE__ ),
-        //'remoteExtPath' => 'WikiStats',
+        //'remoteExtPath' => 'WikiStatistics',
 );
 

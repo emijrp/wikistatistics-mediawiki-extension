@@ -13,7 +13,7 @@
 class SpecialWikiStats extends SpecialPage {
     
     function __construct() {
-        parent::__construct( 'WikiStats' );
+        parent::__construct( 'WikiStatistics' );
     }
     
     /**
@@ -21,9 +21,9 @@ class SpecialWikiStats extends SpecialPage {
      */    
     function execute( $par ) {
         global $wgLang, $wgOut;
-        $wgOut->addModuleScripts( 'ext.WikiStats' );
-        $wgOut->setPageTitle( wfMsg( 'wikistats-pagetitle' ) );
-        $wgOut->addWikiMsg( 'wikistats-welcome' );
+        $wgOut->addModuleScripts( 'ext.WikiStatistics' );
+        $wgOut->setPageTitle( wfMsg( 'wikistatistics-pagetitle' ) );
+        $wgOut->addWikiMsg( 'wikistatistics-welcome' );
         
         $graphwidth = '800px';
         $graphheight = '300px';
@@ -37,8 +37,8 @@ class SpecialWikiStats extends SpecialPage {
         $totalfiles = $this->getTotalFiles($dbr);
         $totalvisits = $this->getTotalVisits($dbr);
         
-        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-summary-header') .'</h2>');
-        $wgOut->addWikiMsg( 'wikistats-basic-stats', $wgLang->formatNum($totalusers), $wgLang->formatNum(0), $wgLang->formatNum(0), $wgLang->formatNum($totalpages), $wgLang->formatNum($totalrevisions), $wgLang->formatNum($totalbytes), $wgLang->formatNum($totalfiles), $wgLang->formatNum($totalvisits) );
+        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistatistics-global-summary-header') .'</h2>');
+        $wgOut->addWikiMsg( 'wikistatistics-basic-stats', $wgLang->formatNum($totalusers), $wgLang->formatNum(0), $wgLang->formatNum(0), $wgLang->formatNum($totalpages), $wgLang->formatNum($totalrevisions), $wgLang->formatNum($totalbytes), $wgLang->formatNum($totalfiles), $wgLang->formatNum($totalvisits) );
         
         $sql = "SELECT CONCAT(YEAR(rev_timestamp),'-',LPAD(MONTH(rev_timestamp), 2, 0),'-',LPAD(DAY(rev_timestamp), 2, 0),'T00:00:00Z') AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
         $res = $dbr->query( $sql );
@@ -48,8 +48,8 @@ class SpecialWikiStats extends SpecialPage {
         }
         $dbr->freeResult( $res );
         
-        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-global-activity-header') .'</h2>');
-        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-all-header') .'</h3>');
+        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistatistics-global-activity-header') .'</h2>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-all-header') .'</h3>');
         
         $wgOut->addHTML( '<div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
 <script type="text/javascript">
@@ -58,7 +58,7 @@ $(function () {
     
     var placeholder = $("#placeholder");
     var data = [ d1, ];
-    var options = { xaxis: { mode: "time", monthNames: ["'.wfMsg('wikistats-month-jan').'", "'.wfMsg('wikistats-month-feb').'", "'.wfMsg('wikistats-month-mar').'", "'.wfMsg('wikistats-month-apr').'", "'.wfMsg('wikistats-month-may').'", "'.wfMsg('wikistats-month-jun').'", "'.wfMsg('wikistats-month-jul').'", "'.wfMsg('wikistats-month-aug').'", "'.wfMsg('wikistats-month-sep').'", "'.wfMsg('wikistats-month-oct').'", "'.wfMsg('wikistats-month-nov').'", "'.wfMsg('wikistats-month-dec').'" ], }, lines: { show: true }, points: { show: true }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    var options = { xaxis: { mode: "time", monthNames: ["'.wfMsg('wikistatistics-month-jan').'", "'.wfMsg('wikistatistics-month-feb').'", "'.wfMsg('wikistatistics-month-mar').'", "'.wfMsg('wikistatistics-month-apr').'", "'.wfMsg('wikistatistics-month-may').'", "'.wfMsg('wikistatistics-month-jun').'", "'.wfMsg('wikistatistics-month-jul').'", "'.wfMsg('wikistatistics-month-aug').'", "'.wfMsg('wikistatistics-month-sep').'", "'.wfMsg('wikistatistics-month-oct').'", "'.wfMsg('wikistatistics-month-nov').'", "'.wfMsg('wikistatistics-month-dec').'" ], }, lines: { show: true }, points: { show: true }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
     $.plot(placeholder, data, options);
 });
 </script>' );
@@ -72,7 +72,7 @@ $(function () {
         }
         $dbr->freeResult( $res );
         
-        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-hourly-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-hourly-header') .'</h3>');
         $wgOut->addHTML( '<div id="placeholder2" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
 <script type="text/javascript">
 $(function () {
@@ -86,15 +86,15 @@ $(function () {
 </script>' );
         
         
-        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-daily-header') .'</h3>');
-        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-weekly-header') .'</h3>');
-        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistats-global-activity-monthly-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-daily-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-weekly-header') .'</h3>');
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-monthly-header') .'</h3>');
 
         $sql = "SELECT rev_user, rev_user_text, count(rev_id) as rev_count FROM revision WHERE 1 GROUP BY rev_user ORDER BY rev_count DESC LIMIT " . $limit;
         $res = $dbr->query( $sql );
-        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistats-users-ranking-header') .'</h2>' );
+        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistatistics-users-ranking-header') .'</h2>' );
         $wgOut->addHTML( '<table class="wikitable sortable" style="text-align: center;">' );
-        $wgOut->addHTML( '<tr><th>'.wfMsg('wikistats-username-th').'</th><th>'.wfMsg('wikistats-edits-th').'</th><th>%</th></tr>' );
+        $wgOut->addHTML( '<tr><th>'.wfMsg('wikistatistics-username-th').'</th><th>'.wfMsg('wikistatistics-edits-th').'</th><th>%</th></tr>' );
         foreach ( $res as $row ) {
             $wgOut->addHTML( '<tr><td>'.Linker::userLink( $row->rev_user, $row->rev_user_text).'</td><td>'.$row->rev_count.'</td><td>'.round($row->rev_count/($totalrevisions/100), 2).'%</td></tr>' );
         }
