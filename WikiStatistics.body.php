@@ -40,6 +40,9 @@ class SpecialWikiStats extends SpecialPage {
         $wgOut->addHTML( '<h2>'.wfMsg( 'wikistatistics-global-summary-header') .'</h2>');
         $wgOut->addWikiMsg( 'wikistatistics-basic-stats', $wgLang->formatNum($totalusers), $wgLang->formatNum(0), $wgLang->formatNum(0), $wgLang->formatNum($totalpages), $wgLang->formatNum($totalrevisions), $wgLang->formatNum($totalbytes), $wgLang->formatNum($totalfiles), $wgLang->formatNum($totalvisits) );
         
+        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistatistics-global-activity-header') .'</h2>');
+        
+        /* All graph */
         $sql = "SELECT CONCAT(YEAR(rev_timestamp),'-',LPAD(MONTH(rev_timestamp), 2, 0),'-',LPAD(DAY(rev_timestamp), 2, 0),'T00:00:00Z') AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
         $res = $dbr->query( $sql );
         $d1 = '';
@@ -48,7 +51,6 @@ class SpecialWikiStats extends SpecialPage {
         }
         $dbr->freeResult( $res );
         
-        $wgOut->addHTML( '<h2>'.wfMsg( 'wikistatistics-global-activity-header') .'</h2>');
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-all-header') .'</h3>');
         
         $wgOut->addHTML( '<div id="placeholder" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
@@ -63,7 +65,7 @@ $(function () {
 });
 </script>' );
         
-        
+        /* Hourly graph */
         $sql = "SELECT LPAD(HOUR(rev_timestamp), 2, 0) AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
         $res = $dbr->query( $sql );
         $d2 = '';
@@ -86,8 +88,76 @@ $(function () {
 </script>' );
         
         
+        /* Daily graph */
+        $sql = "SELECT DAYOFWEEK(rev_timestamp) AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
+        $res = $dbr->query( $sql );
+        $d3 = '';
+        foreach ( $res as $row ) {
+            $d3 .= '["'.$row->timestamp.'", '.$row->rev_count.'], ';
+        }
+        $dbr->freeResult( $res );
+        
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-daily-header') .'</h3>');
+        $wgOut->addHTML( '<div id="placeholder3" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
+<script type="text/javascript">
+$(function () {
+    var d3 = ['.$d3.'];
+    
+    var placeholder3 = $("#placeholder3");
+    var data3 = [ d3, ];
+    var options3 = { xaxis: { mode: null, tickSize: 1, tickDecimals: 0, min: 1, max: 7}, bars: { show: true, barWidth: 0.6 }, points: { show: false }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    $.plot(placeholder3, data3, options3);
+});
+</script>' );
+
+
+        /* Weekly graph */
+        $sql = "SELECT WEEKOFYEAR(rev_timestamp) AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
+        $res = $dbr->query( $sql );
+        $d4 = '';
+        foreach ( $res as $row ) {
+            $d4 .= '["'.$row->timestamp.'", '.$row->rev_count.'], ';
+        }
+        $dbr->freeResult( $res );
+        
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-weekly-header') .'</h3>');
+        $wgOut->addHTML( '<div id="placeholder4" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
+<script type="text/javascript">
+$(function () {
+    var d4 = ['.$d4.'];
+    
+    var placeholder4 = $("#placeholder4");
+    var data4 = [ d4, ];
+    var options4 = { xaxis: { mode: null, tickSize: 1, tickDecimals: 0, min: 0, max: 53}, bars: { show: true, barWidth: 0.6 }, points: { show: false }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    $.plot(placeholder4, data4, options4);
+});
+</script>' );
+
+
+        /* Monthly graph */
+        $sql = "SELECT LPAD(MONTH(rev_timestamp), 2, 0) AS timestamp, count(rev_id) AS rev_count from revision WHERE 1 GROUP BY timestamp ORDER BY timestamp ASC";
+        $res = $dbr->query( $sql );
+        $d5 = '';
+        foreach ( $res as $row ) {
+            $d5 .= '["'.$row->timestamp.'", '.$row->rev_count.'], ';
+        }
+        $dbr->freeResult( $res );
+        
+        $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-weekly-header') .'</h3>');
+        $wgOut->addHTML( '<div id="placeholder5" style="width:'.$graphwidth.';height:'.$graphheight.';"></div>
+<script type="text/javascript">
+$(function () {
+    var d5 = ['.$d5.'];
+    
+    var placeholder5 = $("#placeholder5");
+    var data4 = [ d5, ];
+    var options5 = { xaxis: { mode: null, tickSize: 1, tickDecimals: 0, min: 1, max: 12}, bars: { show: true, barWidth: 0.6 }, points: { show: false }, legend: { noColumns: 1 }, grid: { hoverable: true }, };
+    $.plot(placeholder5, data5, options5);
+});
+</script>' );
+
+        
+
         $wgOut->addHTML( '<h3>'.wfMsg( 'wikistatistics-global-activity-monthly-header') .'</h3>');
 
         $sql = "SELECT rev_user, rev_user_text, count(rev_id) as rev_count FROM revision WHERE 1 GROUP BY rev_user ORDER BY rev_count DESC LIMIT " . $limit;
